@@ -3,32 +3,58 @@ import gql from 'graphql-tag';
 
 // Optional ra ang gql, para syntax completion/hightlight sa editor.
 const typeDefs = gql`
-  # Ang enum kay mga pre defined values na sa graphql.
-  # Mura pug enum sa mysql.
-  enum Gender {
-    MALE
-    FEMALE
+  # Ang interface is contrata. ang mo implement ani is kailangan sundon niya ang fields.
+  interface Movie {
+    title: String!
+    length: Int!
+    releasedDate: String!
+  }
+
+  type TeleSerye implements Movie {
+    # Dapat naa ni silang mga fields kay nag implement man sa ka sa movie nga interface.
+    title: String!
+    length: Int!
+    releasedDate: String!
+    # Specific fields sa kani CinemaMovie nga type.
+    episodeTitle: String!
+    episode: Int!
+  }
+
+  type CinemaMovie implements Movie {
+    # Dapat naa ni silang mga fields kay nag implement man sa ka sa movie nga interface.
+    title: String!
+    length: Int!
+    releasedDate: String!
+    # Specific fields sa kani CinemaMovie nga type.
+    # ....
   }
 
   type Query {
-    # Using sa enum nga gender nga MALE.
     # {
-    #     getGender(gender: MALE)
+    #     getCinemaMovie {
+    #         title
+    #         releasedDate
+    #         length
+    #     }
     # }
-    getGender(gender: Gender!): String!
+    getCinemaMovie: CinemaMovie!
+    # {
+    #     getTeleSerye {
+    #         title
+    #         releasedDate
+    #         length
+    #         episodeTitle
+    #         episode
+    #     }
+    # }
+    getTeleSerye: TeleSerye!
   }
 `
-// If mana ka dri checkout didto sa interface nga branch:
-// git checkout interface
 
 const resolvers = {
-  // E resolve ang enum kung naa siyay different value sa imong app.
-  Gender: {
-    MALE: 1,
-    FEMALE: 0,
-  },
   Query: {
-    getGender: (_, { gender }) => `Gender nimo is: ${gender}`,
+    getCinemaMovie: () => ({ length: 202020, releasedDate: '2018-12-25', title: 'Star wars: Idunno what episode' }),
+    getTeleSerye: () => ({ length: 50421, releasedDate: '2016-08-26', title: 'Bubblegang', episodeTitle: 'Shoot mo yan', episode: 23 }),
   }
 }
 
