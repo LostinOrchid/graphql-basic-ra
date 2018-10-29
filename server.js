@@ -18,10 +18,15 @@ const typeDefs = gql`
     getGender(gender: Gender!): String!
   }
 `
-// If mana ka dri checkout didto sa enum-custom-value nga branch:
-// git checkout enum-custom-value
+// If mana ka dri checkout didto sa interface nga branch:
+// git checkout interface
 
 const resolvers = {
+  // E resolve ang enum kung naa siyay different value sa imong app.
+  Gender: {
+    MALE: 1,
+    FEMALE: 0,
+  },
   Query: {
     getGender: (_, { gender }) => `Gender nimo is: ${gender}`,
   }
