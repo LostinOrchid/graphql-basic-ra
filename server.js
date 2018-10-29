@@ -3,6 +3,10 @@ import gql from 'graphql-tag';
 
 // Optional ra ang gql, para syntax completion/hightlight sa editor.
 const typeDefs = gql`
+  type Query {
+      _empty: String!
+  }
+
   # Custom Type
   type User {
     firstName: String!
@@ -11,25 +15,36 @@ const typeDefs = gql`
     age: Int
   }
 
-  type Query {
-    # Required ang firstName, ug lastName except sa age.
+  # Gamit ug input in-case nga daghan ang kinahanglan nga arguments sa kana nga Query, or Mutation.
+  input CreateUserInput {
+      firstName: String!
+      lastName: String!
+      age: Int!
+  }
+
+  type Mutation {
+    # instead nga ang firstname, lastname ug age kay separate nga arguments.
+    # Ge sagol na sa usa ka argument silang tulo which is ang input.
+    #
     # {
-    #     yourFullnameData(firstName: "John", lastName: "Doe") {
+    #     createUser(input: { firstName: "John", lastName: "Doe", age: 35 }) {
     #         firstName
     #         lastName
     #         age
     #     }
     # }
-    yourFullnameData(firstName: String!, lastName: String!, age: Int): User!
+    createUser(input: CreateUserInput!): User!
   }
-
 `
-// If mana ka dri checkout didto sa input-type nga branch:
-// git checkout input-type
+// If mana ka dri checkout didto sa enum nga branch:
+// git checkout enum
 
 const resolvers = {
-  Query: {
-    yourFullnameData: (_, { firstName, lastName, age }) => ({ firstName, lastName, age }),
+  Mutation: {
+    createUser: (_, { input }) => {
+        // ... e store ang user sa datastore.
+        return { firstName: input.firstName, lastName: input.lastName, age: input.age };
+    },
   }
 }
 
