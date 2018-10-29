@@ -3,41 +3,33 @@ import gql from 'graphql-tag';
 
 // Optional ra ang gql, para syntax completion/hightlight sa editor.
 const typeDefs = gql`
+  # Custom Type
+  type User {
+    firstName: String!
+    lastName: String!
+    # Wlay exclamation mark, meaning pwedi siya ma null
+    age: Int
+  }
+
   type Query {
-    # Comment nimo ani nga query
-    hello(name: String): String!
-  }
-  # Mutations kay kung naa kay data sa server nga ganahan nimo ma add/change like,
-  # create/update ug user.
-  type Mutation {
-    # Mutation nga walay arguments
-    # adto sa playground then e paste ni
+    # Required ang firstName, ug lastName except sa age.
     # {
-    #     mutation {
-    #         getRandomInt
+    #     yourFullnameData(firstName: "John", lastName: "Doe") {
+    #         firstName
+    #         lastName
+    #         age
     #     }
     # }
-    getRandomInt: Int!
-    # Mutation nga walay arguments
-    # adto sa playground then e paste ni
-    # {
-    #     mutation {
-    #         getRandomInt(min: 10, max: 20)
-    #     }
-    # }
-    getRandomIntWithinRange(min: Int!, max: Int!): Int!
+    yourFullnameData(firstName: String!, lastName: String!, age: Int): User!
   }
+
 `
-// If mana ka dri checkout didto sa mutation-with-args nga branch:
-// git checkout mutation-with-args
+// If mana ka dri checkout didto sa input-type nga branch:
+// git checkout input-type
 
 const resolvers = {
   Query: {
-    hello: (_, { name }) => `Hello ${name || 'World'}`,
-  },
-  Mutation: {
-    getRandomInt:(_, args) => parseInt(Math.random(), 10),
-    getRandomIntWithinRange: (_, { min, max }) => parseInt(Math.floor((Math.random() * max) + min)),
+    yourFullnameData: (_, { firstName, lastName, age }) => ({ firstName, lastName, age }),
   }
 }
 
