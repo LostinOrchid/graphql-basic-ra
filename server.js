@@ -4,40 +4,47 @@ import gql from 'graphql-tag';
 // Optional ra ang gql, para syntax completion/hightlight sa editor.
 const typeDefs = gql`
   type Query {
-    # Comment nimo ani nga query
-    hello(name: String): String!
+      _empty: String!
   }
-  # Mutations kay kung naa kay data sa server nga ganahan nimo ma add/change like,
-  # create/update ug user.
+
+  # Custom Type
+  type User {
+    firstName: String!
+    lastName: String!
+    # Wlay exclamation mark, meaning pwedi siya ma null
+    age: Int
+  }
+
+  # Gamit ug input in-case nga daghan ang kinahanglan nga arguments sa kana nga Query, or Mutation.
+  input CreateUserInput {
+      firstName: String!
+      lastName: String!
+      age: Int!
+  }
+
   type Mutation {
-    # Mutation nga walay arguments
-    # adto sa playground then e paste ni
+    # instead nga ang firstname, lastname ug age kay separate nga arguments.
+    # Ge sagol na sa usa ka argument silang tulo which is ang input.
+    #
     # {
-    #     mutation {
-    #         getRandomInt
+    #     createUser(input: { firstName: "John", lastName: "Doe", age: 35 }) {
+    #         firstName
+    #         lastName
+    #         age
     #     }
     # }
-    getRandomInt: Int!
-    # Mutation nga walay arguments
-    # adto sa playground then e paste ni
-    # {
-    #     mutation {
-    #         getRandomInt(min: 10, max: 20)
-    #     }
-    # }
-    getRandomIntWithinRange(min: Int!, max: Int!): Int!
+    createUser(input: CreateUserInput!): User!
   }
 `
-// If mana ka dri checkout didto sa mutation-with-args nga branch:
-// git checkout mutation-with-args
+// If mana ka dri checkout didto sa enum nga branch:
+// git checkout enum
 
 const resolvers = {
-  Query: {
-    hello: (_, { name }) => `Hello ${name || 'World'}`,
-  },
   Mutation: {
-    getRandomInt:(_, args) => parseInt(Math.random(), 10),
-    getRandomIntWithinRange: (_, { min, max }) => parseInt(Math.floor((Math.random() * max) + min)),
+    createUser: (_, { input }) => {
+        // ... e store ang user sa datastore.
+        return { firstName: input.firstName, lastName: input.lastName, age: input.age };
+    },
   }
 }
 
