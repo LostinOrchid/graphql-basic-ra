@@ -18,6 +18,14 @@ const typeDefs = gql`
     #     }
     # }
     getRandomInt: Int!
+    # Mutation nga walay arguments
+    # adto sa playground then e paste ni
+    # {
+    #     mutation {
+    #         getRandomInt(min: 10, max: 20)
+    #     }
+    # }
+    getRandomIntWithinRange(min: Int!, max: Int!): Int!
   }
 `
 // If mana ka dri checkout didto sa mutation-with-args nga branch:
@@ -29,6 +37,7 @@ const resolvers = {
   },
   Mutation: {
     getRandomInt:(_, args) => parseInt(Math.random(), 10),
+    getRandomIntWithinRange: (_, { min, max }) => parseInt(Math.floor((Math.random() * max) + min)),
   }
 }
 
