@@ -3,48 +3,27 @@ import gql from 'graphql-tag';
 
 // Optional ra ang gql, para syntax completion/hightlight sa editor.
 const typeDefs = gql`
+  # Ang enum kay mga pre defined values na sa graphql.
+  # Mura pug enum sa mysql.
+  enum Gender {
+    MALE
+    FEMALE
+  }
+
   type Query {
-      _empty: String!
-  }
-
-  # Custom Type
-  type User {
-    firstName: String!
-    lastName: String!
-    # Wlay exclamation mark, meaning pwedi siya ma null
-    age: Int
-  }
-
-  # Gamit ug input in-case nga daghan ang kinahanglan nga arguments sa kana nga Query, or Mutation.
-  input CreateUserInput {
-      firstName: String!
-      lastName: String!
-      age: Int!
-  }
-
-  type Mutation {
-    # instead nga ang firstname, lastname ug age kay separate nga arguments.
-    # Ge sagol na sa usa ka argument silang tulo which is ang input.
-    #
+    # Using sa enum nga gender nga MALE.
     # {
-    #     createUser(input: { firstName: "John", lastName: "Doe", age: 35 }) {
-    #         firstName
-    #         lastName
-    #         age
-    #     }
+    #     getGender(gender: MALE)
     # }
-    createUser(input: CreateUserInput!): User!
+    getGender(gender: Gender!): String!
   }
 `
-// If mana ka dri checkout didto sa enum nga branch:
-// git checkout enum
+// If mana ka dri checkout didto sa enum-custom-value nga branch:
+// git checkout enum-custom-value
 
 const resolvers = {
-  Mutation: {
-    createUser: (_, { input }) => {
-        // ... e store ang user sa datastore.
-        return { firstName: input.firstName, lastName: input.lastName, age: input.age };
-    },
+  Query: {
+    getGender: (_, { gender }) => `Gender nimo is: ${gender}`,
   }
 }
 
